@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Playlist Scheduler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f0d0a;
+  --bg-card: #1a1612;
+  --bg-input: #221d18;
+  --ink: #f4ead5;
+  --ink-dim: #a89880;
+  --ink-faint: #6b5e48;
+  --accent: #d97a4e;
+  --accent-glow: #f4a261;
+  --line: #332a20;
+  --good: #7ba05b;
+  --bad: #c84f3a;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Fraunces', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse at top right, rgba(217, 122, 78, 0.08), transparent 50%),
+    radial-gradient(ellipse at bottom left, rgba(244, 162, 97, 0.05), transparent 50%);
+  padding: 32px 20px 60px;
+}
+
+.container { max-width: 720px; margin: 0 auto; }
+
+header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 20px;
+  margin-bottom: 32px;
+}
+
+h1 {
+  font-size: 38px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  font-style: italic;
+}
+
+h1 .num {
+  font-style: normal;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.status-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-dim);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--ink-faint);
+}
+.dot.live { background: var(--good); box-shadow: 0 0 8px var(--good); animation: pulse 2s ease-in-out infinite; }
+.dot.off { background: var(--bad); }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.panel {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 28px;
+  margin-bottom: 20px;
+}
+
+.panel-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ink-faint);
+  margin-bottom: 16px;
+}
+
+/* Login screen */
+.login-hero {
+  text-align: center;
+  padding: 60px 20px;
+}
+.login-hero h2 {
+  font-size: 52px;
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  line-height: 1.05;
+}
+.login-hero h2 em {
+  color: var(--accent);
+  font-style: normal;
+  font-weight: 500;
+}
+.login-hero p {
+  color: var(--ink-dim);
+  font-size: 17px;
+  max-width: 420px;
+  margin: 0 auto 36px;
+  line-height: 1.5;
+}
+
+button {
+  font-family: 'JetBrains Mono', monospace;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg);
+  padding: 14px 28px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 500;
+  border-radius: 2px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(217, 122, 78, 0.3);
+}
+
+.btn-ghost {
+  color: var(--ink-dim);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  transition: all 0.15s ease;
+}
+.btn-ghost:hover { color: var(--ink); border-color: var(--ink-faint); }
+
+/* Slot rows */
+.slot {
+  display: grid;
+  grid-template-columns: 110px 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+.slot:last-child { border-bottom: none; }
+.slot.active {
+  background: linear-gradient(90deg, rgba(217, 122, 78, 0.08), transparent);
+  margin: 0 -28px;
+  padding: 18px 28px;
+  border-bottom: 1px solid var(--line);
+}
+
+.slot-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+.slot-time input {
+  background: var(--bg-input);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 8px 10px;
+  border-radius: 2px;
+  width: 100%;
+  color-scheme: dark;
+}
+.slot-time input:focus { outline: none; border-color: var(--accent); }
+
+.slot-playlist select {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: 'Fraunces', serif;
+  font-size: 16px;
+  padding: 10px 12px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.slot-playlist select:focus { outline: none; border-color: var(--accent); }
+
+.slot-status {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+.slot.active .slot-status {
+  color: var(--accent);
+}
+
+/* Now playing */
+.now-playing {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--accent);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.now-playing-info { min-width: 0; flex: 1; }
+.now-playing-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-bottom: 4px;
+}
+.now-playing-track {
+  font-size: 18px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.now-playing-meta {
+  font-size: 13px;
+  color: var(--ink-dim);
+  margin-top: 2px;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.controls-left, .controls-right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-dim);
+  cursor: pointer;
+  user-select: none;
+}
+.toggle-track {
+  width: 36px;
+  height: 20px;
+  background: var(--bg-input);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  position: relative;
+  transition: background 0.2s ease;
+}
+.toggle-track::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--ink-dim);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.toggle.on .toggle-track { background: var(--accent); border-color: var(--accent); }
+.toggle.on .toggle-track::after { transform: translateX(16px); background: var(--bg); }
+
+/* Log */
+.log {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-faint);
+  max-height: 140px;
+  overflow-y: auto;
+  padding-top: 4px;
+}
+.log-entry {
+  padding: 4px 0;
+  border-bottom: 1px dashed rgba(107, 94, 72, 0.2);
+}
+.log-entry:last-child { border-bottom: none; }
+.log-time { color: var(--ink-faint); margin-right: 12px; }
+.log-msg { color: var(--ink-dim); }
+.log-msg.action { color: var(--accent-glow); }
+
+/* Hidden */
+.hidden { display: none !important; }
+
+/* Footer */
+footer {
+  text-align: center;
+  margin-top: 40px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--ink-faint);
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  body { padding: 20px 14px 40px; }
+  h1 { font-size: 28px; }
+  .panel { padding: 20px; }
+  .slot { grid-template-columns: 90px 1fr; gap: 10px; }
+  .slot.active { margin: 0 -20px; padding: 18px 20px; }
+  .slot-status { grid-column: 1 / -1; }
+  .login-hero h2 { font-size: 36px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>Playlist <em>Scheduler</em></h1>
+    <div class="status-pill" id="statusPill">
+      <span class="dot" id="statusDot"></span>
+      <span id="statusText">Disconnected</span>
+    </div>
+  </header>
+
+  <!-- LOGIN VIEW -->
+  <div id="loginView">
+    <div class="panel">
+      <div class="login-hero">
+        <h2>Set it<br>and <em>forget it.</em></h2>
+        <p>Three playlists. Three time slots. Plays the right one all day, every day — automatically.</p>
+        <button class="btn-primary" id="loginBtn">Connect Spotify</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN VIEW -->
+  <div id="mainView" class="hidden">
+
+    <div class="now-playing" id="nowPlaying">
+      <div class="now-playing-info">
+        <div class="now-playing-label">Now Playing</div>
+        <div class="now-playing-track" id="npTrack">—</div>
+        <div class="now-playing-meta" id="npMeta">Nothing playing</div>
+      </div>
+      <div class="now-playing-label" id="npFromList">—</div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-label">Daily Schedule</div>
+      <div id="slots"></div>
+
+      <div class="controls">
+        <div class="controls-left">
+          <label class="toggle on" id="autoToggle">
+            <span class="toggle-track"></span>
+            <span>Auto-correct</span>
+          </label>
+        </div>
+        <div class="controls-right">
+          <button class="btn-ghost" id="checkNowBtn">Check Now</button>
+          <button class="btn-ghost" id="logoutBtn">Disconnect</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-label">Activity Log</div>
+      <div class="log" id="log"></div>
+    </div>
+
+  </div>
+
+  <footer>Keep this tab open · Built for the floor</footer>
+</div>
+
+<script>
+// ============================================================
+// CONFIG — fill in your Spotify Client ID after creating the app
+// ============================================================
+const SPOTIFY_CLIENT_ID = 'PASTE_YOUR_CLIENT_ID_HERE';
+const REDIRECT_URI = window.location.origin + window.location.pathname;
+const SCOPES = [
+  'user-read-playback-state',
+  'user-modify-playback-state',
+  'playlist-read-private',
+  'playlist-read-collaborative'
+].join(' ');
+
+// ============================================================
+// STATE
+// ============================================================
+const DEFAULT_SCHEDULE = [
+  { time: '11:00', playlistId: '', playlistName: '' },
+  { time: '15:00', playlistId: '', playlistName: '' },
+  { time: '19:00', playlistId: '', playlistName: '' }
+];
+
+let state = {
+  token: null,
+  expiresAt: 0,
+  refreshToken: null,
+  playlists: [],
+  schedule: JSON.parse(localStorage.getItem('schedule') || 'null') || DEFAULT_SCHEDULE,
+  autoCorrect: localStorage.getItem('autoCorrect') !== 'false',
+  lastSwitchedSlot: -1,
+  log: []
+};
+
+// ============================================================
+// PKCE OAUTH (no client secret needed)
+// ============================================================
+function randomString(len) {
+  const arr = new Uint8Array(len);
+  crypto.getRandomValues(arr);
+  return Array.from(arr, b => ('0' + b.toString(16)).slice(-2)).join('');
+}
+async function sha256(plain) {
+  const data = new TextEncoder().encode(plain);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  return btoa(String.fromCharCode(...new Uint8Array(hash)))
+    .replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+}
+
+async function login() {
+  if (SPOTIFY_CLIENT_ID === 'PASTE_YOUR_CLIENT_ID_HERE') {
+    alert('Setup needed: paste your Spotify Client ID into the file (see instructions).');
+    return;
+  }
+  const verifier = randomString(64);
+  const challenge = await sha256(verifier);
+  localStorage.setItem('pkce_verifier', verifier);
+  const params = new URLSearchParams({
+    client_id: SPOTIFY_CLIENT_ID,
+    response_type: 'code',
+    redirect_uri: REDIRECT_URI,
+    code_challenge_method: 'S256',
+    code_challenge: challenge,
+    scope: SCOPES
+  });
+  window.location.href = 'https://accounts.spotify.com/authorize?' + params;
+}
+
+async function exchangeCode(code) {
+  const verifier = localStorage.getItem('pkce_verifier');
+  const body = new URLSearchParams({
+    client_id: SPOTIFY_CLIENT_ID,
+    grant_type: 'authorization_code',
+    code,
+    redirect_uri: REDIRECT_URI,
+    code_verifier: verifier
+  });
+  const res = await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body
+  });
+  const data = await res.json();
+  if (data.access_token) {
+    saveTokens(data);
+    return true;
+  }
+  return false;
+}
+
+async function refreshAccessToken() {
+  if (!state.refreshToken) return false;
+  const body = new URLSearchParams({
+    client_id: SPOTIFY_CLIENT_ID,
+    grant_type: 'refresh_token',
+    refresh_token: state.refreshToken
+  });
+  const res = await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body
+  });
+  const data = await res.json();
+  if (data.access_token) {
+    saveTokens(data);
+    return true;
+  }
+  return false;
+}
+
+function saveTokens(data) {
+  state.token = data.access_token;
+  state.expiresAt = Date.now() + (data.expires_in * 1000) - 60000;
+  if (data.refresh_token) state.refreshToken = data.refresh_token;
+  localStorage.setItem('spotify_token', state.token);
+  localStorage.setItem('spotify_expires', state.expiresAt);
+  localStorage.setItem('spotify_refresh', state.refreshToken);
+}
+
+function loadTokens() {
+  state.token = localStorage.getItem('spotify_token');
+  state.expiresAt = parseInt(localStorage.getItem('spotify_expires') || '0');
+  state.refreshToken = localStorage.getItem('spotify_refresh');
+}
+
+function logout() {
+  localStorage.removeItem('spotify_token');
+  localStorage.removeItem('spotify_expires');
+  localStorage.removeItem('spotify_refresh');
+  state.token = null;
+  state.expiresAt = 0;
+  state.refreshToken = null;
+  showLogin();
+}
+
+// ============================================================
+// SPOTIFY API
+// ============================================================
+async function api(path, opts = {}) {
+  if (Date.now() > state.expiresAt) {
+    const ok = await refreshAccessToken();
+    if (!ok) { logout(); return null; }
+  }
+  const res = await fetch('https://api.spotify.com/v1' + path, {
+    ...opts,
+    headers: {
+      'Authorization': 'Bearer ' + state.token,
+      'Content-Type': 'application/json',
+      ...(opts.headers || {})
+    }
+  });
+  if (res.status === 204) return null;
+  if (!res.ok) {
+    if (res.status === 401) { logout(); return null; }
+    return null;
+  }
+  return res.json();
+}
+
+async function loadPlaylists() {
+  const all = [];
+  let url = '/me/playlists?limit=50';
+  while (url) {
+    const data = await api(url);
+    if (!data) break;
+    all.push(...data.items);
+    url = data.next ? data.next.replace('https://api.spotify.com/v1', '') : null;
+  }
+  state.playlists = all.filter(p => p && p.id);
+}
+
+async function getCurrentPlayback() {
+  return api('/me/player');
+}
+
+async function playPlaylist(playlistId) {
+  // Find an active device
+  const devices = await api('/me/player/devices');
+  if (!devices || !devices.devices.length) {
+    addLog('No active Spotify device found', 'action');
+    return false;
+  }
+  const active = devices.devices.find(d => d.is_active) || devices.devices[0];
+  const res = await fetch('https://api.spotify.com/v1/me/player/play?device_id=' + active.id, {
+    method: 'PUT',
+    headers: {
+      'Authorization': 'Bearer ' + state.token,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ context_uri: 'spotify:playlist:' + playlistId })
+  });
+  return res.ok;
+}
+
+// ============================================================
+// SCHEDULER LOGIC
+// ============================================================
+function getActiveSlotIndex() {
+  // Sort slots by time, find which one we're currently in
+  const now = new Date();
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  const valid = state.schedule
+    .map((s, i) => ({ ...s, idx: i, mins: parseTime(s.time) }))
+    .filter(s => s.playlistId)
+    .sort((a, b) => a.mins - b.mins);
+  if (!valid.length) return -1;
+  // Find latest slot whose time <= now. If none, use the last slot (yesterday's night roll-over).
+  let active = valid[valid.length - 1];
+  for (const s of valid) {
+    if (s.mins <= nowMin) active = s;
+  }
+  return active.idx;
+}
+
+function parseTime(t) {
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
+
+async function tick() {
+  if (!state.token) return;
+  const playback = await getCurrentPlayback();
+  updateNowPlaying(playback);
+
+  const activeIdx = getActiveSlotIndex();
+  renderSlots(activeIdx);
+
+  if (!state.autoCorrect || activeIdx < 0) return;
+  const slot = state.schedule[activeIdx];
+  if (!slot.playlistId) return;
+
+  // Check if current playback is from the right playlist
+  const currentContext = playback?.context?.uri;
+  const expectedContext = 'spotify:playlist:' + slot.playlistId;
+
+  if (currentContext !== expectedContext) {
+    // Either nothing is playing, or wrong playlist — switch it
+    addLog(`Switching to "${slot.playlistName}"`, 'action');
+    const ok = await playPlaylist(slot.playlistId);
+    if (ok) state.lastSwitchedSlot = activeIdx;
+  } else if (state.lastSwitchedSlot !== activeIdx) {
+    state.lastSwitchedSlot = activeIdx;
+  }
+}
+
+function updateNowPlaying(playback) {
+  const npTrack = document.getElementById('npTrack');
+  const npMeta = document.getElementById('npMeta');
+  const npFromList = document.getElementById('npFromList');
+  if (!playback || !playback.item) {
+    npTrack.textContent = '—';
+    npMeta.textContent = 'Nothing playing';
+    npFromList.textContent = '—';
+    return;
+  }
+  npTrack.textContent = playback.item.name;
+  npMeta.textContent = playback.item.artists.map(a => a.name).join(', ');
+  // Try to identify which playlist
+  const ctxUri = playback.context?.uri;
+  if (ctxUri && ctxUri.startsWith('spotify:playlist:')) {
+    const pid = ctxUri.split(':')[2];
+    const pl = state.playlists.find(p => p.id === pid);
+    npFromList.textContent = pl ? pl.name : 'Playlist';
+  } else {
+    npFromList.textContent = 'Not from playlist';
+  }
+}
+
+// ============================================================
+// UI RENDERING
+// ============================================================
+function renderSlots(activeIdx = -1) {
+  const container = document.getElementById('slots');
+  container.innerHTML = '';
+  state.schedule.forEach((slot, i) => {
+    const div = document.createElement('div');
+    div.className = 'slot' + (i === activeIdx ? ' active' : '');
+
+    const timeWrap = document.createElement('div');
+    timeWrap.className = 'slot-time';
+    const timeInput = document.createElement('input');
+    timeInput.type = 'time';
+    timeInput.value = slot.time;
+    timeInput.addEventListener('change', e => {
+      state.schedule[i].time = e.target.value;
+      saveSchedule();
+      renderSlots(getActiveSlotIndex());
+    });
+    timeWrap.appendChild(timeInput);
+
+    const plWrap = document.createElement('div');
+    plWrap.className = 'slot-playlist';
+    const select = document.createElement('select');
+    const blank = document.createElement('option');
+    blank.value = '';
+    blank.textContent = '— Choose a playlist —';
+    select.appendChild(blank);
+    state.playlists.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      opt.textContent = p.name;
+      if (p.id === slot.playlistId) opt.selected = true;
+      select.appendChild(opt);
+    });
+    select.addEventListener('change', e => {
+      const pl = state.playlists.find(p => p.id === e.target.value);
+      state.schedule[i].playlistId = e.target.value;
+      state.schedule[i].playlistName = pl ? pl.name : '';
+      saveSchedule();
+      renderSlots(getActiveSlotIndex());
+    });
+    plWrap.appendChild(select);
+
+    const status = document.createElement('div');
+    status.className = 'slot-status';
+    status.textContent = i === activeIdx ? '● Active now' : 'Slot ' + (i + 1);
+
+    div.appendChild(timeWrap);
+    div.appendChild(plWrap);
+    div.appendChild(status);
+    container.appendChild(div);
+  });
+}
+
+function saveSchedule() {
+  localStorage.setItem('schedule', JSON.stringify(state.schedule));
+}
+
+function addLog(msg, type = '') {
+  const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+  state.log.unshift({ time, msg, type });
+  state.log = state.log.slice(0, 50);
+  renderLog();
+}
+
+function renderLog() {
+  const el = document.getElementById('log');
+  el.innerHTML = '';
+  if (!state.log.length) {
+    el.innerHTML = '<div class="log-entry"><span class="log-msg">Waiting for first check…</span></div>';
+    return;
+  }
+  state.log.forEach(e => {
+    const div = document.createElement('div');
+    div.className = 'log-entry';
+    div.innerHTML = `<span class="log-time">${e.time}</span><span class="log-msg ${e.type}">${e.msg}</span>`;
+    el.appendChild(div);
+  });
+}
+
+function setStatus(text, kind) {
+  document.getElementById('statusText').textContent = text;
+  const dot = document.getElementById('statusDot');
+  dot.className = 'dot ' + (kind || '');
+}
+
+function showLogin() {
+  document.getElementById('loginView').classList.remove('hidden');
+  document.getElementById('mainView').classList.add('hidden');
+  setStatus('Disconnected', 'off');
+}
+
+function showMain() {
+  document.getElementById('loginView').classList.add('hidden');
+  document.getElementById('mainView').classList.remove('hidden');
+  setStatus('Connected', 'live');
+}
+
+// ============================================================
+// AUTO-TOGGLE UI
+// ============================================================
+function setupToggle() {
+  const t = document.getElementById('autoToggle');
+  if (state.autoCorrect) t.classList.add('on'); else t.classList.remove('on');
+  t.addEventListener('click', () => {
+    state.autoCorrect = !state.autoCorrect;
+    localStorage.setItem('autoCorrect', state.autoCorrect);
+    t.classList.toggle('on', state.autoCorrect);
+    addLog('Auto-correct ' + (state.autoCorrect ? 'enabled' : 'paused'), 'action');
+  });
+}
+
+// ============================================================
+// INIT
+// ============================================================
+async function init() {
+  document.getElementById('loginBtn').addEventListener('click', login);
+  document.getElementById('logoutBtn')?.addEventListener('click', logout);
+  document.getElementById('checkNowBtn')?.addEventListener('click', () => { addLog('Manual check'); tick(); });
+
+  // Handle OAuth callback
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('code')) {
+    const ok = await exchangeCode(params.get('code'));
+    window.history.replaceState({}, document.title, REDIRECT_URI);
+    if (!ok) { showLogin(); return; }
+  }
+
+  loadTokens();
+  if (!state.token) { showLogin(); return; }
+
+  showMain();
+  setupToggle();
+  await loadPlaylists();
+  renderSlots(getActiveSlotIndex());
+  renderLog();
+  addLog('Scheduler started');
+  await tick();
+  // Run every 30 seconds
+  setInterval(tick, 30000);
+}
+
+init();
+</script>
+</body>
+</html>
