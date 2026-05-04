@@ -9,19 +9,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0f0d0a;
-  --bg-card: #1a1612;
-  --bg-input: #221d18;
-  --bg-slot: #181410;
-  --ink: #f4ead5;
-  --ink-dim: #a89880;
-  --ink-faint: #6b5e48;
-  --accent: #d97a4e;
-  --accent-glow: #f4a261;
-  --line: #332a20;
-  --good: #7ba05b;
-  --bad: #c84f3a;
-  --closed: #15110d;
+  /* Sage + Ivory palette */
+  --bg: #f5f1e8;            /* ivory */
+  --bg-card: #fbfaf4;        /* lighter ivory for cards */
+  --bg-input: #ecebdf;       /* muted ivory for inputs */
+  --bg-slot: #f0eee2;
+  --ink: #2d3a2e;            /* deep forest ink */
+  --ink-dim: #5a6b5b;
+  --ink-faint: #8a9489;
+  --accent: #6a8c69;         /* sage green */
+  --accent-deep: #4f6e4e;
+  --accent-glow: #8aab89;
+  --line: #d8d6c4;
+  --line-soft: #e6e3d3;
+  --good: #6a8c69;
+  --bad: #b85c4f;
+  --warn: #d4a574;
+  --closed: #e8e6d8;
+  --shadow: 0 1px 3px rgba(45, 58, 46, 0.06), 0 4px 12px rgba(45, 58, 46, 0.04);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -32,8 +37,8 @@ body {
   color: var(--ink);
   min-height: 100vh;
   background-image:
-    radial-gradient(ellipse at top right, rgba(217, 122, 78, 0.08), transparent 50%),
-    radial-gradient(ellipse at bottom left, rgba(244, 162, 97, 0.05), transparent 50%);
+    radial-gradient(ellipse at top right, rgba(106, 140, 105, 0.07), transparent 50%),
+    radial-gradient(ellipse at bottom left, rgba(212, 165, 116, 0.05), transparent 50%);
   padding: 28px 24px 60px;
 }
 
@@ -72,10 +77,11 @@ h1 em { color: var(--accent); font-style: normal; font-weight: 700; }
   display: flex;
   align-items: center;
   gap: 8px;
+  background: var(--bg-card);
 }
 
 .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-faint); }
-.dot.live { background: var(--good); box-shadow: 0 0 8px var(--good); animation: pulse 2s ease-in-out infinite; }
+.dot.live { background: var(--good); box-shadow: 0 0 8px rgba(106, 140, 105, 0.5); animation: pulse 2s ease-in-out infinite; }
 .dot.off { background: var(--bad); }
 
 @keyframes pulse {
@@ -100,11 +106,12 @@ button {
   letter-spacing: 0.15em;
   font-weight: 500;
   border-radius: 2px;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 .btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(217, 122, 78, 0.3);
+  background: var(--accent-deep);
+  box-shadow: 0 8px 20px rgba(106, 140, 105, 0.25);
 }
 
 .btn-ghost {
@@ -115,6 +122,7 @@ button {
   padding: 8px 14px;
   border: 1px solid var(--line);
   border-radius: 2px;
+  background: var(--bg-card);
   transition: all 0.15s ease;
 }
 .btn-ghost:hover { color: var(--ink); border-color: var(--ink-faint); }
@@ -124,6 +132,7 @@ button {
   border: 1px solid var(--line);
   border-radius: 4px;
   padding: 28px;
+  box-shadow: var(--shadow);
 }
 .login-hero { text-align: center; padding: 60px 20px; }
 .login-hero h2 {
@@ -143,6 +152,49 @@ button {
   line-height: 1.5;
 }
 
+/* Settings strip */
+.settings-strip {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 14px 22px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow);
+}
+.settings-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ink-faint);
+  margin-right: 4px;
+}
+.leeway-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Fraunces', serif;
+  font-size: 14px;
+  color: var(--ink-dim);
+}
+.leeway-input {
+  background: var(--bg-input);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  padding: 5px 8px;
+  border-radius: 2px;
+  width: 56px;
+  text-align: center;
+}
+.leeway-input:focus { outline: none; border-color: var(--accent); }
+
+/* Main layout */
 .main-grid {
   display: grid;
   grid-template-columns: 280px 1fr;
@@ -160,6 +212,7 @@ button {
   max-height: calc(100vh - 40px);
   display: flex;
   flex-direction: column;
+  box-shadow: var(--shadow);
 }
 .sidebar-label {
   font-family: 'JetBrains Mono', monospace;
@@ -202,13 +255,33 @@ button {
   transition: all 0.15s ease;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 10px;
   user-select: none;
+  position: relative;
+  border-left-width: 3px;
 }
-.playlist-card:hover { border-color: var(--accent); transform: translateX(2px); }
+.playlist-card:hover {
+  border-color: var(--accent);
+  transform: translateX(2px);
+  box-shadow: 0 2px 6px rgba(45, 58, 46, 0.08);
+}
 .playlist-card:active { cursor: grabbing; }
 .playlist-card.dragging { opacity: 0.4; }
+.playlist-card.stale {
+  position: relative;
+}
+.playlist-card.stale::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--warn);
+  box-shadow: 0 0 4px var(--warn);
+}
 .playlist-name {
   font-size: 14px;
   white-space: nowrap;
@@ -228,13 +301,16 @@ button {
   min-width: 22px;
   text-align: center;
 }
-.usage-badge.used { color: var(--accent); border-color: var(--accent); }
+.usage-badge.used { color: var(--accent-deep); border-color: var(--accent); background: rgba(106, 140, 105, 0.08); }
+.usage-badge.heavy { color: #b85c4f; border-color: #d4a574; background: rgba(212, 165, 116, 0.12); }
 
+/* Week */
 .week-panel {
   background: var(--bg-card);
   border: 1px solid var(--line);
   border-radius: 4px;
   padding: 20px;
+  box-shadow: var(--shadow);
 }
 .week-header-row {
   display: flex;
@@ -263,10 +339,10 @@ button {
   flex-direction: column;
   min-height: 360px;
 }
-.day-col.closed { background: var(--closed); opacity: 0.5; }
+.day-col.closed { background: var(--closed); opacity: 0.55; }
 .day-col.today {
   border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent), 0 4px 16px rgba(217, 122, 78, 0.15);
+  box-shadow: 0 0 0 1px var(--accent), 0 4px 16px rgba(106, 140, 105, 0.15);
 }
 .day-header {
   display: flex;
@@ -277,7 +353,7 @@ button {
   border-bottom: 1px dashed var(--line);
 }
 .day-name { font-size: 14px; font-weight: 500; font-style: italic; }
-.day-name.today-name { color: var(--accent); }
+.day-name.today-name { color: var(--accent-deep); }
 .day-num {
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
@@ -295,6 +371,7 @@ button {
   text-transform: uppercase;
 }
 .day-slots { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+
 .slot {
   background: var(--bg-input);
   border: 1px dashed var(--line);
@@ -306,24 +383,29 @@ button {
   gap: 6px;
   position: relative;
   transition: all 0.15s ease;
+  border-left-width: 3px;
 }
 .slot.has-playlist {
   border-style: solid;
   border-color: var(--line);
-  background: linear-gradient(135deg, var(--bg-input), rgba(217, 122, 78, 0.04));
+  background: var(--bg-card);
 }
 .slot.drag-over {
   border-color: var(--accent);
-  background: rgba(217, 122, 78, 0.1);
+  background: rgba(106, 140, 105, 0.1);
 }
 .slot.active-now {
   border-color: var(--accent);
-  background: linear-gradient(135deg, rgba(217, 122, 78, 0.15), rgba(244, 162, 97, 0.05));
+  background: linear-gradient(135deg, rgba(106, 140, 105, 0.18), rgba(138, 171, 137, 0.08));
   animation: pulseSlot 2s ease-in-out infinite;
 }
+.slot.early-active, .slot.late-active {
+  border-style: solid;
+  background: linear-gradient(135deg, rgba(212, 165, 116, 0.12), rgba(212, 165, 116, 0.04));
+}
 @keyframes pulseSlot {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(217, 122, 78, 0); }
-  50% { box-shadow: 0 0 0 2px rgba(217, 122, 78, 0.15); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(106, 140, 105, 0); }
+  50% { box-shadow: 0 0 0 2px rgba(106, 140, 105, 0.18); }
 }
 .slot-time-input {
   background: transparent;
@@ -333,9 +415,8 @@ button {
   font-size: 11px;
   padding: 0;
   width: 60px;
-  color-scheme: dark;
 }
-.slot-time-input:focus { outline: none; color: var(--accent); }
+.slot-time-input:focus { outline: none; color: var(--accent-deep); }
 .slot-playlist-name { font-size: 13px; line-height: 1.2; word-break: break-word; }
 .slot-empty {
   color: var(--ink-faint);
@@ -365,6 +446,7 @@ button {
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.15s ease;
+  border: 1px solid var(--line);
 }
 .slot:hover .slot-remove { opacity: 1; }
 .slot-remove:hover { color: var(--bad); }
@@ -389,16 +471,18 @@ button {
 .day-btn:hover:not(:disabled) { color: var(--ink); border-color: var(--ink-faint); }
 .day-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
+/* Now playing */
 .now-playing {
   background: var(--bg-card);
   border: 1px solid var(--line);
-  border-left: 2px solid var(--accent);
+  border-left: 3px solid var(--accent);
   padding: 16px 22px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
+  box-shadow: var(--shadow);
 }
 .now-playing-info { min-width: 0; flex: 1; }
 .now-playing-label {
@@ -417,6 +501,69 @@ button {
   text-overflow: ellipsis;
 }
 .now-playing-meta { font-size: 12px; color: var(--ink-dim); margin-top: 2px; }
+.now-playing-window {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-align: right;
+}
+.now-playing-window strong { color: var(--accent-deep); font-weight: 500; }
+
+/* Refresh nudges */
+.nudge-panel {
+  background: linear-gradient(135deg, rgba(212, 165, 116, 0.1), rgba(212, 165, 116, 0.02));
+  border: 1px solid rgba(212, 165, 116, 0.4);
+  border-radius: 4px;
+  padding: 16px 22px;
+  margin-bottom: 16px;
+}
+.nudge-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.nudge-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #8a6d3b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nudge-title::before {
+  content: '✿';
+  font-family: 'Fraunces', serif;
+  font-size: 14px;
+}
+.nudge-list { display: flex; flex-direction: column; gap: 6px; }
+.nudge-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  font-size: 14px;
+}
+.nudge-item-text { color: var(--ink-dim); }
+.nudge-item-text strong { color: var(--ink); font-weight: 500; }
+.nudge-dismiss {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: transparent;
+  border: 1px solid var(--line);
+  padding: 4px 8px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.nudge-dismiss:hover { color: var(--ink); border-color: var(--ink-faint); }
 
 .controls {
   display: flex;
@@ -461,7 +608,7 @@ button {
   transition: transform 0.2s ease, background 0.2s ease;
 }
 .toggle.on .toggle-track { background: var(--accent); border-color: var(--accent); }
-.toggle.on .toggle-track::after { transform: translateX(16px); background: var(--bg); }
+.toggle.on .toggle-track::after { transform: translateX(16px); background: var(--bg-card); }
 
 .log-panel {
   background: var(--bg-card);
@@ -469,6 +616,7 @@ button {
   border-radius: 4px;
   padding: 18px 22px;
   margin-top: 16px;
+  box-shadow: var(--shadow);
 }
 .log {
   font-family: 'JetBrains Mono', monospace;
@@ -481,7 +629,7 @@ button {
 .log-entry { padding: 3px 0; }
 .log-time { color: var(--ink-faint); margin-right: 12px; }
 .log-msg { color: var(--ink-dim); }
-.log-msg.action { color: var(--accent-glow); }
+.log-msg.action { color: var(--accent-deep); }
 
 .hidden { display: none !important; }
 
@@ -542,7 +690,20 @@ footer {
         <div class="now-playing-track" id="npTrack">—</div>
         <div class="now-playing-meta" id="npMeta">Nothing playing</div>
       </div>
-      <div class="now-playing-label" id="npFromList">—</div>
+      <div class="now-playing-window" id="npWindow">—</div>
+    </div>
+
+    <div id="nudgeContainer"></div>
+
+    <div class="settings-strip">
+      <span class="settings-label">Leeway</span>
+      <div class="leeway-group">
+        <span>Start</span>
+        <input type="number" class="leeway-input" id="leadIn" min="0" max="180" step="5">
+        <span>min early · End</span>
+        <input type="number" class="leeway-input" id="leadOut" min="0" max="240" step="5">
+        <span>min late</span>
+      </div>
     </div>
 
     <div class="main-grid">
@@ -612,6 +773,30 @@ const DEFAULT_WEEK = [
 const DAY_NAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const DAY_FULL  = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 
+// Color palette for auto-coloring playlists. These are hand-picked to look good on ivory.
+const PLAYLIST_COLORS = [
+  '#6a8c69', // sage
+  '#c97b5a', // terracotta
+  '#7a8db8', // dusty blue
+  '#b08abf', // muted lavender
+  '#d4a574', // wheat
+  '#7fa39b', // seafoam
+  '#b85c4f', // brick
+  '#94785a', // taupe
+  '#a8a05c', // olive
+  '#8a6db8', // amethyst
+  '#5a8a9c', // teal
+  '#bf8a72'  // clay
+];
+
+function colorForPlaylist(id) {
+  if (!id) return 'transparent';
+  // Hash id to a stable color
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) & 0xffffffff;
+  return PLAYLIST_COLORS[Math.abs(h) % PLAYLIST_COLORS.length];
+}
+
 let state = {
   token: null,
   expiresAt: 0,
@@ -620,6 +805,9 @@ let state = {
   searchFilter: '',
   week: JSON.parse(localStorage.getItem('week_schedule') || 'null') || JSON.parse(JSON.stringify(DEFAULT_WEEK)),
   autoCorrect: localStorage.getItem('autoCorrect') !== 'false',
+  leadIn: parseInt(localStorage.getItem('leadIn') ?? '45'),    // minutes early
+  leadOut: parseInt(localStorage.getItem('leadOut') ?? '60'),  // minutes late
+  dismissedNudges: JSON.parse(localStorage.getItem('dismissedNudges') || '{}'),
   log: []
 };
 
@@ -743,6 +931,18 @@ async function loadPlaylists() {
   }
   state.playlists = all.filter(p => p && p.id);
   document.getElementById('playlistCount').textContent = state.playlists.length;
+
+  // Update tracking of last-modified for each playlist
+  const tracked = JSON.parse(localStorage.getItem('playlist_tracking') || '{}');
+  state.playlists.forEach(p => {
+    if (!tracked[p.id]) {
+      tracked[p.id] = { firstSeen: Date.now(), lastModified: Date.now(), snapshotId: p.snapshot_id };
+    } else if (tracked[p.id].snapshotId !== p.snapshot_id) {
+      tracked[p.id].lastModified = Date.now();
+      tracked[p.id].snapshotId = p.snapshot_id;
+    }
+  });
+  localStorage.setItem('playlist_tracking', JSON.stringify(tracked));
 }
 
 async function getCurrentPlayback() { return api('/me/player'); }
@@ -764,21 +964,86 @@ async function playPlaylist(playlistId) {
 
 function jsDayToWeekIdx(jsDay) { return (jsDay + 6) % 7; }
 function parseTime(t) { const [h,m] = t.split(':').map(Number); return h*60+m; }
+function formatMin(min) {
+  const m = ((min % 1440) + 1440) % 1440;
+  const h = Math.floor(m/60), mm = m%60;
+  const period = h < 12 ? 'am' : 'pm';
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return `${h12}:${String(mm).padStart(2,'0')}${period}`;
+}
 
+/**
+ * Returns the slot that should be playing right now, taking leeway into account.
+ * - Lead-in: a slot becomes "active" leadIn minutes BEFORE its scheduled time.
+ *   (But only the first slot of the day uses this — between slots, transitions are clean.)
+ * - Lead-out: after the last slot, music keeps playing (we just stay on last slot) for leadOut minutes.
+ *
+ * Returns: { dayIdx, slotIdx, playlistId, playlistName, time, kind } or null.
+ */
 function getActiveSlot() {
   const now = new Date();
-  const dayIdx = jsDayToWeekIdx(now.getDay());
-  const day = state.week[dayIdx];
-  if (!day || day.closed || !day.slots.length) return null;
   const nowMin = now.getHours()*60 + now.getMinutes();
-  const valid = day.slots
-    .map((slot, i) => ({ ...slot, idx: i, mins: parseTime(slot.time) }))
-    .filter(x => x.playlistId)
-    .sort((a,b) => a.mins - b.mins);
-  if (!valid.length) return null;
+  const dayIdx = jsDayToWeekIdx(now.getDay());
+  const yesterdayIdx = (dayIdx + 6) % 7;
+  const day = state.week[dayIdx];
+  const yesterday = state.week[yesterdayIdx];
+
+  // Helper to get sorted valid slots for a given day
+  const validSlots = d => d && !d.closed
+    ? d.slots
+        .map((slot, i) => ({ ...slot, idx: i, mins: parseTime(slot.time) }))
+        .filter(x => x.playlistId)
+        .sort((a,b) => a.mins - b.mins)
+    : [];
+
+  const todaySlots = validSlots(day);
+  const yesterdaySlots = validSlots(yesterday);
+
+  // Check if we're in YESTERDAY's lead-out window (post-midnight overflow)
+  // i.e. yesterday's last slot extending past midnight + leadOut
+  if (yesterdaySlots.length) {
+    const lastY = yesterdaySlots[yesterdaySlots.length - 1];
+    // Yesterday's late window is: lastY.mins .. (24*60 + leadOut)
+    // We're "in it" today if nowMin < (lastY.mins + however long ago, modulo 24h) + leadOut
+    // Simpler: if it's currently between 0:00 and leadOut minutes after midnight, and yesterday had a last slot
+    if (nowMin < state.leadOut) {
+      // Only honor this if today doesn't have an earlier slot that should override
+      const firstToday = todaySlots[0];
+      const earliestTodayActive = firstToday ? firstToday.mins - state.leadIn : Infinity;
+      if (nowMin < earliestTodayActive) {
+        return { dayIdx: yesterdayIdx, slotIdx: lastY.idx, playlistId: lastY.playlistId, playlistName: lastY.playlistName, time: lastY.time, kind: 'late' };
+      }
+    }
+  }
+
+  if (!todaySlots.length) return null;
+
+  // Lead-in window for today's first slot
+  const first = todaySlots[0];
+  if (nowMin < first.mins - state.leadIn) {
+    // Too early
+    return null;
+  }
+  if (nowMin < first.mins) {
+    // In lead-in window
+    return { dayIdx, slotIdx: first.idx, playlistId: first.playlistId, playlistName: first.playlistName, time: first.time, kind: 'early' };
+  }
+
+  // Find the latest slot whose time <= now
   let active = null;
-  for (const v of valid) if (v.mins <= nowMin) active = v;
-  return active ? { dayIdx, slotIdx: active.idx, ...active } : null;
+  for (const v of todaySlots) {
+    if (v.mins <= nowMin) active = v;
+  }
+  if (!active) return null;
+
+  // Check if we're past the last slot (in lead-out window)
+  const last = todaySlots[todaySlots.length - 1];
+  if (active.idx === last.idx && nowMin > last.mins + state.leadOut + 6*60) {
+    // More than 6 hours past last slot + lead-out, probably closed
+    return null;
+  }
+
+  return { dayIdx, slotIdx: active.idx, playlistId: active.playlistId, playlistName: active.playlistName, time: active.time, kind: nowMin > last.mins ? 'late' : 'normal' };
 }
 
 function getUsageCount(playlistId) {
@@ -797,38 +1062,38 @@ function saveWeek() {
 async function tick() {
   if (!state.token) return;
   const playback = await getCurrentPlayback();
-  updateNowPlaying(playback);
   const active = getActiveSlot();
+  updateNowPlaying(playback, active);
   renderWeek();
   renderLibrary();
+  renderNudges();
 
   if (!state.autoCorrect || !active) return;
   const expectedContext = 'spotify:playlist:' + active.playlistId;
   if (playback?.context?.uri !== expectedContext) {
-    addLog(`Switching to "${active.playlistName}" · ${DAY_FULL[active.dayIdx]}`, 'action');
+    const tag = active.kind === 'early' ? '(early)' : active.kind === 'late' ? '(late)' : '';
+    addLog(`Switching to "${active.playlistName}" · ${DAY_FULL[active.dayIdx]} ${tag}`.trim(), 'action');
     await playPlaylist(active.playlistId);
   }
 }
 
-function updateNowPlaying(playback) {
+function updateNowPlaying(playback, active) {
   const npTrack = document.getElementById('npTrack');
   const npMeta = document.getElementById('npMeta');
-  const npFromList = document.getElementById('npFromList');
+  const npWindow = document.getElementById('npWindow');
   if (!playback || !playback.item) {
     npTrack.textContent = '—';
     npMeta.textContent = 'Nothing playing';
-    npFromList.textContent = '—';
-    return;
-  }
-  npTrack.textContent = playback.item.name;
-  npMeta.textContent = playback.item.artists.map(a => a.name).join(', ');
-  const ctxUri = playback.context?.uri;
-  if (ctxUri && ctxUri.startsWith('spotify:playlist:')) {
-    const pid = ctxUri.split(':')[2];
-    const pl = state.playlists.find(p => p.id === pid);
-    npFromList.textContent = pl ? pl.name : 'Playlist';
   } else {
-    npFromList.textContent = 'Not from playlist';
+    npTrack.textContent = playback.item.name;
+    npMeta.textContent = playback.item.artists.map(a => a.name).join(', ');
+  }
+  if (active) {
+    const tag = active.kind === 'early' ? '<strong>Early</strong> · ' :
+                active.kind === 'late'  ? '<strong>Late</strong> · '  : '';
+    npWindow.innerHTML = `${tag}${active.playlistName} · ${formatMin(parseTime(active.time))}`;
+  } else {
+    npWindow.textContent = 'Outside hours';
   }
 }
 
@@ -845,16 +1110,28 @@ function renderLibrary() {
     lib.innerHTML = '<div style="color:var(--ink-faint);font-size:12px;text-align:center;padding:20px;font-style:italic;">No playlists match.</div>';
     return;
   }
+  const tracked = JSON.parse(localStorage.getItem('playlist_tracking') || '{}');
+  const STALE_DAYS = 60;
   filtered.forEach(p => {
     const card = document.createElement('div');
     card.className = 'playlist-card';
     card.draggable = true;
     card.dataset.playlistId = p.id;
     const count = getUsageCount(p.id);
+    const color = colorForPlaylist(p.id);
+    card.style.borderLeftColor = color;
+    const t = tracked[p.id];
+    const ageDays = t ? (Date.now() - t.lastModified) / (1000*60*60*24) : 0;
+    const isStale = t && ageDays > STALE_DAYS;
+    if (isStale) card.classList.add('stale');
+    let badgeClass = '';
+    if (count >= 5) badgeClass = 'heavy';
+    else if (count > 0) badgeClass = 'used';
     card.innerHTML = `
       <span class="playlist-name">${escapeHtml(p.name)}</span>
-      <span class="usage-badge ${count > 0 ? 'used' : ''}">${count > 0 ? count + '×' : '—'}</span>
+      <span class="usage-badge ${badgeClass}">${count > 0 ? count + '×' : '—'}</span>
     `;
+    if (isStale) card.title = `Last updated ~${Math.round(ageDays)} days ago`;
     card.addEventListener('dragstart', e => {
       card.classList.add('dragging');
       e.dataTransfer.setData('application/playlist-id', p.id);
@@ -923,9 +1200,14 @@ function renderWeek() {
 function buildSlotEl(dayIdx, slotIdx, slot, active) {
   const el = document.createElement('div');
   el.className = 'slot';
-  if (slot.playlistId) el.classList.add('has-playlist');
+  if (slot.playlistId) {
+    el.classList.add('has-playlist');
+    el.style.borderLeftColor = colorForPlaylist(slot.playlistId);
+  }
   if (active && active.dayIdx === dayIdx && active.slotIdx === slotIdx) {
     el.classList.add('active-now');
+    if (active.kind === 'early') el.classList.add('early-active');
+    if (active.kind === 'late') el.classList.add('late-active');
   }
 
   const timeRow = document.createElement('div');
@@ -961,6 +1243,7 @@ function buildSlotEl(dayIdx, slotIdx, slot, active) {
       saveWeek();
       renderWeek();
       renderLibrary();
+      renderNudges();
     });
     el.appendChild(remove);
   } else {
@@ -986,6 +1269,7 @@ function buildSlotEl(dayIdx, slotIdx, slot, active) {
     saveWeek();
     renderWeek();
     renderLibrary();
+    renderNudges();
     addLog(`${pname} → ${DAY_NAMES[dayIdx]} ${slot.time}`);
   });
 
@@ -1012,6 +1296,84 @@ function removeSlot(dayIdx) {
   renderLibrary();
 }
 
+// ============================================================
+// REFRESH NUDGES
+// ============================================================
+function renderNudges() {
+  const container = document.getElementById('nudgeContainer');
+  container.innerHTML = '';
+  const tracked = JSON.parse(localStorage.getItem('playlist_tracking') || '{}');
+  const STALE_DAYS = 60;
+  const HEAVY_USE = 5;
+  const nudges = [];
+
+  // Time-based: scheduled playlists not modified in a while
+  const usedIds = new Set();
+  state.week.forEach(d => { if (!d.closed) d.slots.forEach(s => { if (s.playlistId) usedIds.add(s.playlistId); }); });
+  usedIds.forEach(pid => {
+    const t = tracked[pid];
+    if (!t) return;
+    const ageDays = Math.round((Date.now() - t.lastModified) / (1000*60*60*24));
+    const pl = state.playlists.find(p => p.id === pid);
+    if (ageDays >= STALE_DAYS && pl) {
+      const key = 'stale-' + pid + '-' + Math.floor(ageDays/30);
+      if (!state.dismissedNudges[key]) {
+        nudges.push({
+          key,
+          html: `<strong>${escapeHtml(pl.name)}</strong> hasn't been updated in <strong>${ageDays} days</strong>. Maybe time for a refresh?`
+        });
+      }
+    }
+  });
+
+  // Usage-based: heavily-used playlists
+  const counts = {};
+  state.week.forEach(d => { if (!d.closed) d.slots.forEach(s => { if (s.playlistId) counts[s.playlistId] = (counts[s.playlistId]||0)+1; }); });
+  Object.entries(counts).forEach(([pid, n]) => {
+    if (n >= HEAVY_USE) {
+      const pl = state.playlists.find(p => p.id === pid);
+      if (!pl) return;
+      const key = 'heavy-' + pid + '-' + n;
+      if (!state.dismissedNudges[key]) {
+        nudges.push({
+          key,
+          html: `<strong>${escapeHtml(pl.name)}</strong> is playing <strong>${n}×</strong> this week. Consider rotating in another playlist for variety.`
+        });
+      }
+    }
+  });
+
+  if (!nudges.length) return;
+
+  const panel = document.createElement('div');
+  panel.className = 'nudge-panel';
+  panel.innerHTML = `
+    <div class="nudge-header">
+      <span class="nudge-title">Suggestions</span>
+    </div>
+    <div class="nudge-list" id="nudgeList"></div>
+  `;
+  container.appendChild(panel);
+  const list = panel.querySelector('#nudgeList');
+  nudges.slice(0, 3).forEach(n => {
+    const item = document.createElement('div');
+    item.className = 'nudge-item';
+    item.innerHTML = `
+      <div class="nudge-item-text">${n.html}</div>
+      <button class="nudge-dismiss">Dismiss</button>
+    `;
+    item.querySelector('.nudge-dismiss').addEventListener('click', () => {
+      state.dismissedNudges[n.key] = Date.now();
+      localStorage.setItem('dismissedNudges', JSON.stringify(state.dismissedNudges));
+      renderNudges();
+    });
+    list.appendChild(item);
+  });
+}
+
+// ============================================================
+// LOG / STATUS
+// ============================================================
 function addLog(msg, type = '') {
   const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
   state.log.unshift({ time, msg, type });
@@ -1058,6 +1420,25 @@ function setupToggle() {
   });
 }
 
+function setupLeeway() {
+  const li = document.getElementById('leadIn');
+  const lo = document.getElementById('leadOut');
+  li.value = state.leadIn;
+  lo.value = state.leadOut;
+  li.addEventListener('change', e => {
+    state.leadIn = Math.max(0, Math.min(180, parseInt(e.target.value) || 0));
+    e.target.value = state.leadIn;
+    localStorage.setItem('leadIn', state.leadIn);
+    tick();
+  });
+  lo.addEventListener('change', e => {
+    state.leadOut = Math.max(0, Math.min(240, parseInt(e.target.value) || 0));
+    e.target.value = state.leadOut;
+    localStorage.setItem('leadOut', state.leadOut);
+    tick();
+  });
+}
+
 async function init() {
   document.getElementById('loginBtn').addEventListener('click', login);
   document.getElementById('logoutBtn')?.addEventListener('click', logout);
@@ -1068,6 +1449,7 @@ async function init() {
       saveWeek();
       renderWeek();
       renderLibrary();
+      renderNudges();
       addLog('Week reset to defaults', 'action');
     }
   });
@@ -1088,14 +1470,18 @@ async function init() {
 
   showMain();
   setupToggle();
+  setupLeeway();
   await loadPlaylists();
   renderWeek();
   renderLibrary();
   renderLog();
+  renderNudges();
   addLog('Scheduler started');
   await tick();
   setInterval(tick, 30000);
   setInterval(() => renderWeek(), 60000);
+  // Reload playlists every 10 min to catch updates
+  setInterval(() => loadPlaylists().then(() => { renderLibrary(); renderNudges(); }), 10*60*1000);
 }
 
 init();
