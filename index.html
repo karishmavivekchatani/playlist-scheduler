@@ -9,15 +9,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  /* Sage + Ivory palette */
-  --bg: #f5f1e8;            /* ivory */
-  --bg-card: #fbfaf4;        /* lighter ivory for cards */
-  --bg-input: #ecebdf;       /* muted ivory for inputs */
+  --bg: #f5f1e8;
+  --bg-card: #fbfaf4;
+  --bg-input: #ecebdf;
   --bg-slot: #f0eee2;
-  --ink: #2d3a2e;            /* deep forest ink */
+  --ink: #2d3a2e;
   --ink-dim: #5a6b5b;
   --ink-faint: #8a9489;
-  --accent: #6a8c69;         /* sage green */
+  --accent: #6a8c69;
   --accent-deep: #4f6e4e;
   --accent-glow: #8aab89;
   --line: #d8d6c4;
@@ -152,7 +151,6 @@ button {
   line-height: 1.5;
 }
 
-/* Settings strip */
 .settings-strip {
   background: var(--bg-card);
   border: 1px solid var(--line);
@@ -194,7 +192,6 @@ button {
 }
 .leeway-input:focus { outline: none; border-color: var(--accent); }
 
-/* Main layout */
 .main-grid {
   display: grid;
   grid-template-columns: 280px 1fr;
@@ -267,9 +264,7 @@ button {
 }
 .playlist-card:active { cursor: grabbing; }
 .playlist-card.dragging { opacity: 0.4; }
-.playlist-card.stale {
-  position: relative;
-}
+.playlist-card.stale { position: relative; }
 .playlist-card.stale::after {
   content: '';
   position: absolute;
@@ -304,7 +299,6 @@ button {
 .usage-badge.used { color: var(--accent-deep); border-color: var(--accent); background: rgba(106, 140, 105, 0.08); }
 .usage-badge.heavy { color: #b85c4f; border-color: #d4a574; background: rgba(212, 165, 116, 0.12); }
 
-/* Week */
 .week-panel {
   background: var(--bg-card);
   border: 1px solid var(--line);
@@ -337,9 +331,8 @@ button {
   padding: 12px 10px;
   display: flex;
   flex-direction: column;
-  min-height: 360px;
 }
-.day-col.closed { background: var(--closed); opacity: 0.55; }
+.day-col.closed { background: var(--closed); opacity: 0.55; min-height: 360px; }
 .day-col.today {
   border-color: var(--accent);
   box-shadow: 0 0 0 1px var(--accent), 0 4px 16px rgba(106, 140, 105, 0.15);
@@ -370,20 +363,53 @@ button {
   letter-spacing: 0.15em;
   text-transform: uppercase;
 }
-.day-slots { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+
+/* Day open/close strip */
+.day-times {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  margin-bottom: 8px;
+  padding: 4px 2px;
+  border-bottom: 1px dashed var(--line);
+}
+.day-times-label { color: var(--ink-faint); }
+.day-time-input {
+  background: transparent;
+  border: none;
+  color: var(--ink-dim);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 0;
+  width: 56px;
+  text-align: right;
+}
+.day-time-input:focus { outline: none; color: var(--accent-deep); }
+
+.day-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
 
 .slot {
   background: var(--bg-input);
   border: 1px dashed var(--line);
   border-radius: 3px;
   padding: 8px;
-  min-height: 64px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   position: relative;
   transition: all 0.15s ease;
   border-left-width: 3px;
+  /* Heights are set inline via flex-grow proportional to duration */
 }
 .slot.has-playlist {
   border-style: solid;
@@ -407,6 +433,13 @@ button {
   0%, 100% { box-shadow: 0 0 0 0 rgba(106, 140, 105, 0); }
   50% { box-shadow: 0 0 0 2px rgba(106, 140, 105, 0.18); }
 }
+
+.slot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
 .slot-time-input {
   background: transparent;
   border: none;
@@ -414,10 +447,30 @@ button {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
   padding: 0;
-  width: 60px;
+  width: 56px;
 }
 .slot-time-input:focus { outline: none; color: var(--accent-deep); }
-.slot-playlist-name { font-size: 13px; line-height: 1.2; word-break: break-word; }
+.slot-duration {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--ink-faint);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.slot-duration.warn { color: var(--bad); }
+
+.slot-window {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--ink-faint);
+  letter-spacing: 0.04em;
+}
+.slot-playlist-name {
+  font-size: 13px;
+  line-height: 1.2;
+  word-break: break-word;
+  margin-top: auto;
+}
 .slot-empty {
   color: var(--ink-faint);
   font-size: 11px;
@@ -450,6 +503,7 @@ button {
 }
 .slot:hover .slot-remove { opacity: 1; }
 .slot-remove:hover { color: var(--bad); }
+
 .day-controls {
   display: flex;
   gap: 4px;
@@ -471,7 +525,6 @@ button {
 .day-btn:hover:not(:disabled) { color: var(--ink); border-color: var(--ink-faint); }
 .day-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-/* Now playing */
 .now-playing {
   background: var(--bg-card);
   border: 1px solid var(--line);
@@ -511,7 +564,6 @@ button {
 }
 .now-playing-window strong { color: var(--accent-deep); font-weight: 500; }
 
-/* Refresh nudges */
 .nudge-panel {
   background: linear-gradient(135deg, rgba(212, 165, 116, 0.1), rgba(212, 165, 116, 0.02));
   border: 1px solid rgba(212, 165, 116, 0.4);
@@ -760,41 +812,41 @@ const SCOPES = [
 ].join(' ');
 
 function s(time) { return { time, playlistId: '', playlistName: '' }; }
+// closeTime in minutes-from-midnight. If it's "past midnight" (e.g. 12:30am close on Sunday),
+// we use a value > 24*60. e.g. 12:30am the next day = 24*60 + 30 = 1470.
 const DEFAULT_WEEK = [
-  { closed: true,  slots: [] },
-  { closed: false, slots: [ s('16:00'), s('19:00'), s('22:00') ] },
-  { closed: false, slots: [ s('16:00'), s('19:00'), s('22:00') ] },
-  { closed: false, slots: [ s('16:00'), s('19:00'), s('22:00') ] },
-  { closed: false, slots: [ s('16:00'), s('19:00'), s('22:00') ] },
-  { closed: false, slots: [ s('15:00'), s('18:00'), s('21:00') ] },
-  { closed: false, slots: [ s('15:00'), s('18:00'), s('21:00') ] }
+  { closed: true,  slots: [], closeTime: 23*60 + 30 },
+  { closed: false, slots: [ s('16:00'), s('19:00'), s('22:00') ], closeTime: 23*60 + 30 }, // Tue: 11:30pm
+  { closed: false, slots: [ s('16:00'), s('19:00'), s('22:00') ], closeTime: 23*60 + 30 }, // Wed
+  { closed: false, slots: [ s('16:00'), s('19:00'), s('22:00') ], closeTime: 23*60 + 30 }, // Thu
+  { closed: false, slots: [ s('16:00'), s('19:00'), s('22:00') ], closeTime: 23*60 + 30 }, // Fri
+  { closed: false, slots: [ s('15:00'), s('18:00'), s('21:00') ], closeTime: 23*60 + 30 }, // Sat
+  { closed: false, slots: [ s('15:00'), s('18:00'), s('21:00') ], closeTime: 23*60 + 30 }  // Sun
 ];
 
 const DAY_NAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const DAY_FULL  = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 
-// Color palette for auto-coloring playlists. These are hand-picked to look good on ivory.
 const PLAYLIST_COLORS = [
-  '#6a8c69', // sage
-  '#c97b5a', // terracotta
-  '#7a8db8', // dusty blue
-  '#b08abf', // muted lavender
-  '#d4a574', // wheat
-  '#7fa39b', // seafoam
-  '#b85c4f', // brick
-  '#94785a', // taupe
-  '#a8a05c', // olive
-  '#8a6db8', // amethyst
-  '#5a8a9c', // teal
-  '#bf8a72'  // clay
+  '#6a8c69', '#c97b5a', '#7a8db8', '#b08abf', '#d4a574', '#7fa39b',
+  '#b85c4f', '#94785a', '#a8a05c', '#8a6db8', '#5a8a9c', '#bf8a72'
 ];
 
 function colorForPlaylist(id) {
   if (!id) return 'transparent';
-  // Hash id to a stable color
   let h = 0;
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) & 0xffffffff;
   return PLAYLIST_COLORS[Math.abs(h) % PLAYLIST_COLORS.length];
+}
+
+// MIGRATION: old saved schedules don't have closeTime per day. Add defaults if missing.
+function migrateWeek(w) {
+  if (!Array.isArray(w) || w.length !== 7) return JSON.parse(JSON.stringify(DEFAULT_WEEK));
+  return w.map((d, i) => ({
+    closed: !!d.closed,
+    slots: Array.isArray(d.slots) ? d.slots : [],
+    closeTime: typeof d.closeTime === 'number' ? d.closeTime : (DEFAULT_WEEK[i]?.closeTime ?? (23*60+30))
+  }));
 }
 
 let state = {
@@ -803,10 +855,10 @@ let state = {
   refreshToken: null,
   playlists: [],
   searchFilter: '',
-  week: JSON.parse(localStorage.getItem('week_schedule') || 'null') || JSON.parse(JSON.stringify(DEFAULT_WEEK)),
+  week: migrateWeek(JSON.parse(localStorage.getItem('week_schedule') || 'null') || JSON.parse(JSON.stringify(DEFAULT_WEEK))),
   autoCorrect: localStorage.getItem('autoCorrect') !== 'false',
-  leadIn: parseInt(localStorage.getItem('leadIn') ?? '45'),    // minutes early
-  leadOut: parseInt(localStorage.getItem('leadOut') ?? '60'),  // minutes late
+  leadIn: parseInt(localStorage.getItem('leadIn') ?? '45'),
+  leadOut: parseInt(localStorage.getItem('leadOut') ?? '60'),
   dismissedNudges: JSON.parse(localStorage.getItem('dismissedNudges') || '{}'),
   log: []
 };
@@ -932,7 +984,6 @@ async function loadPlaylists() {
   state.playlists = all.filter(p => p && p.id);
   document.getElementById('playlistCount').textContent = state.playlists.length;
 
-  // Update tracking of last-modified for each playlist
   const tracked = JSON.parse(localStorage.getItem('playlist_tracking') || '{}');
   state.playlists.forEach(p => {
     if (!tracked[p.id]) {
@@ -971,15 +1022,38 @@ function formatMin(min) {
   const h12 = h % 12 === 0 ? 12 : h % 12;
   return `${h12}:${String(mm).padStart(2,'0')}${period}`;
 }
+function formatDuration(mins) {
+  if (mins <= 0) return '0m';
+  const h = Math.floor(mins/60);
+  const m = mins % 60;
+  if (h === 0) return `${m}m`;
+  if (m === 0) return `${h}h`;
+  return `${h}h ${m}m`;
+}
+function pad2(n) { return String(n).padStart(2,'0'); }
+function minToHHMM(min) {
+  const m = ((min % 1440) + 1440) % 1440;
+  return pad2(Math.floor(m/60)) + ':' + pad2(m%60);
+}
 
 /**
- * Returns the slot that should be playing right now, taking leeway into account.
- * - Lead-in: a slot becomes "active" leadIn minutes BEFORE its scheduled time.
- *   (But only the first slot of the day uses this — between slots, transitions are clean.)
- * - Lead-out: after the last slot, music keeps playing (we just stay on last slot) for leadOut minutes.
- *
- * Returns: { dayIdx, slotIdx, playlistId, playlistName, time, kind } or null.
+ * For a given day, returns an array of slots with start/end/duration filled in.
+ * - Slot N starts at slot[N].time
+ * - Slot N ends at either slot[N+1].time (if exists) or day.closeTime
+ * - The last slot's end time may exceed 24:00 (we model close as minutes-from-midnight, possibly >1440)
  */
+function getSlotWindows(day) {
+  if (!day || day.closed) return [];
+  const sorted = day.slots
+    .map((slot, i) => ({ ...slot, idx: i, mins: parseTime(slot.time) }))
+    .sort((a,b) => a.mins - b.mins);
+  return sorted.map((s, i) => {
+    const next = sorted[i + 1];
+    const endMin = next ? next.mins : day.closeTime;
+    return { ...s, startMin: s.mins, endMin, durationMin: endMin - s.mins };
+  });
+}
+
 function getActiveSlot() {
   const now = new Date();
   const nowMin = now.getHours()*60 + now.getMinutes();
@@ -988,62 +1062,60 @@ function getActiveSlot() {
   const day = state.week[dayIdx];
   const yesterday = state.week[yesterdayIdx];
 
-  // Helper to get sorted valid slots for a given day
-  const validSlots = d => d && !d.closed
-    ? d.slots
-        .map((slot, i) => ({ ...slot, idx: i, mins: parseTime(slot.time) }))
-        .filter(x => x.playlistId)
-        .sort((a,b) => a.mins - b.mins)
-    : [];
+  const todayWindows = getSlotWindows(day).filter(w => w.playlistId);
+  const yesterdayWindows = getSlotWindows(yesterday).filter(w => w.playlistId);
 
-  const todaySlots = validSlots(day);
-  const yesterdaySlots = validSlots(yesterday);
-
-  // Check if we're in YESTERDAY's lead-out window (post-midnight overflow)
-  // i.e. yesterday's last slot extending past midnight + leadOut
-  if (yesterdaySlots.length) {
-    const lastY = yesterdaySlots[yesterdaySlots.length - 1];
-    // Yesterday's late window is: lastY.mins .. (24*60 + leadOut)
-    // We're "in it" today if nowMin < (lastY.mins + however long ago, modulo 24h) + leadOut
-    // Simpler: if it's currently between 0:00 and leadOut minutes after midnight, and yesterday had a last slot
-    if (nowMin < state.leadOut) {
-      // Only honor this if today doesn't have an earlier slot that should override
-      const firstToday = todaySlots[0];
-      const earliestTodayActive = firstToday ? firstToday.mins - state.leadIn : Infinity;
-      if (nowMin < earliestTodayActive) {
-        return { dayIdx: yesterdayIdx, slotIdx: lastY.idx, playlistId: lastY.playlistId, playlistName: lastY.playlistName, time: lastY.time, kind: 'late' };
+  // Yesterday's close past midnight (closeTime > 1440) overflowing into today
+  if (yesterdayWindows.length) {
+    const lastY = yesterdayWindows[yesterdayWindows.length - 1];
+    if (lastY.endMin > 1440) {
+      // Overflow window: [0 .. lastY.endMin - 1440] today, plus leadOut
+      const overflowEnd = (lastY.endMin - 1440) + state.leadOut;
+      if (nowMin < overflowEnd) {
+        // Make sure today doesn't have an earlier active slot
+        const firstToday = todayWindows[0];
+        const earliestTodayActive = firstToday ? firstToday.startMin - state.leadIn : Infinity;
+        if (nowMin < earliestTodayActive) {
+          return { dayIdx: yesterdayIdx, slotIdx: lastY.idx, playlistId: lastY.playlistId, playlistName: lastY.playlistName, time: lastY.time, kind: 'late' };
+        }
+      }
+    } else {
+      // Yesterday's close <= midnight, just check leadOut into today (early-morning hours)
+      const overflowEnd = state.leadOut - (1440 - lastY.endMin);
+      if (overflowEnd > 0 && nowMin < overflowEnd) {
+        const firstToday = todayWindows[0];
+        const earliestTodayActive = firstToday ? firstToday.startMin - state.leadIn : Infinity;
+        if (nowMin < earliestTodayActive) {
+          return { dayIdx: yesterdayIdx, slotIdx: lastY.idx, playlistId: lastY.playlistId, playlistName: lastY.playlistName, time: lastY.time, kind: 'late' };
+        }
       }
     }
   }
 
-  if (!todaySlots.length) return null;
+  if (!todayWindows.length) return null;
 
-  // Lead-in window for today's first slot
-  const first = todaySlots[0];
-  if (nowMin < first.mins - state.leadIn) {
-    // Too early
-    return null;
-  }
-  if (nowMin < first.mins) {
-    // In lead-in window
+  const first = todayWindows[0];
+  if (nowMin < first.startMin - state.leadIn) return null;
+  if (nowMin < first.startMin) {
     return { dayIdx, slotIdx: first.idx, playlistId: first.playlistId, playlistName: first.playlistName, time: first.time, kind: 'early' };
   }
 
-  // Find the latest slot whose time <= now
+  // Find the latest slot whose start <= now and (start..end+leadOut) covers now
   let active = null;
-  for (const v of todaySlots) {
-    if (v.mins <= nowMin) active = v;
+  for (const w of todayWindows) {
+    if (w.startMin <= nowMin) active = w;
   }
   if (!active) return null;
 
-  // Check if we're past the last slot (in lead-out window)
-  const last = todaySlots[todaySlots.length - 1];
-  if (active.idx === last.idx && nowMin > last.mins + state.leadOut + 6*60) {
-    // More than 6 hours past last slot + lead-out, probably closed
-    return null;
+  const last = todayWindows[todayWindows.length - 1];
+  // We're past end of last slot's window?
+  if (active.idx === last.idx) {
+    // Last slot's natural end is last.endMin; allow leadOut beyond that
+    if (last.endMin <= 1440 && nowMin > last.endMin + state.leadOut) return null;
+    // If close overflows next day, we won't be past it during today's "today" hours
   }
-
-  return { dayIdx, slotIdx: active.idx, playlistId: active.playlistId, playlistName: active.playlistName, time: active.time, kind: nowMin > last.mins ? 'late' : 'normal' };
+  const isLate = active.idx === last.idx && nowMin > last.endMin;
+  return { dayIdx, slotIdx: active.idx, playlistId: active.playlistId, playlistName: active.playlistName, time: active.time, kind: isLate ? 'late' : 'normal' };
 }
 
 function getUsageCount(playlistId) {
@@ -1091,7 +1163,7 @@ function updateNowPlaying(playback, active) {
   if (active) {
     const tag = active.kind === 'early' ? '<strong>Early</strong> · ' :
                 active.kind === 'late'  ? '<strong>Late</strong> · '  : '';
-    npWindow.innerHTML = `${tag}${active.playlistName} · ${formatMin(parseTime(active.time))}`;
+    npWindow.innerHTML = `${tag}${escapeHtml(active.playlistName)} · ${formatMin(parseTime(active.time))}`;
   } else {
     npWindow.textContent = 'Outside hours';
   }
@@ -1169,10 +1241,50 @@ function renderWeek() {
       closedDiv.textContent = 'Closed';
       col.appendChild(closedDiv);
     } else {
+      // Open + close strip
+      const windows = getSlotWindows(day);
+      const firstStart = windows.length ? windows[0].startMin : null;
+      const dayTimes = document.createElement('div');
+      dayTimes.className = 'day-times';
+      const openLabel = firstStart != null ? formatMin(firstStart) : '—';
+
+      // Close time picker — always visible, always editable
+      const closeIsOvernight = day.closeTime > 1440;
+      const closeLabelTime = day.closeTime > 1440 ? day.closeTime - 1440 : day.closeTime;
+      const closeStr = minToHHMM(closeLabelTime);
+
+      dayTimes.innerHTML = `
+        <span class="day-times-label">Open ${openLabel}</span>
+        <span class="day-times-label" style="display:flex;align-items:center;gap:4px;">
+          Close
+          <input type="time" class="day-time-input" data-day="${dayIdx}" value="${closeStr}" />
+          ${closeIsOvernight ? '<span style="font-size:8px;opacity:0.7;">+1d</span>' : ''}
+        </span>
+      `;
+      const closeInput = dayTimes.querySelector('.day-time-input');
+      closeInput.addEventListener('change', e => {
+        const newMin = parseTime(e.target.value);
+        // Heuristic: if user picks a close time that is BEFORE the last slot start,
+        // assume they meant "next day" (e.g. 12:30am = 24:30 = 1470).
+        const lastSlotMin = day.slots.length
+          ? Math.max(...day.slots.map(s => parseTime(s.time)))
+          : 0;
+        let computed = newMin;
+        if (newMin < lastSlotMin || newMin < 6*60) {
+          // Likely an overnight close (e.g. 12:30am, 1am, 2am)
+          computed = newMin + 1440;
+        }
+        state.week[dayIdx].closeTime = computed;
+        saveWeek();
+        renderWeek();
+      });
+      col.appendChild(dayTimes);
+
+      // Slots
       const slotsWrap = document.createElement('div');
       slotsWrap.className = 'day-slots';
-      day.slots.forEach((slot, slotIdx) => {
-        slotsWrap.appendChild(buildSlotEl(dayIdx, slotIdx, slot, active));
+      windows.forEach((w) => {
+        slotsWrap.appendChild(buildSlotEl(dayIdx, w, active));
       });
       col.appendChild(slotsWrap);
 
@@ -1197,34 +1309,55 @@ function renderWeek() {
   });
 }
 
-function buildSlotEl(dayIdx, slotIdx, slot, active) {
+function buildSlotEl(dayIdx, w, active) {
+  const slot = state.week[dayIdx].slots[w.idx];
   const el = document.createElement('div');
   el.className = 'slot';
   if (slot.playlistId) {
     el.classList.add('has-playlist');
     el.style.borderLeftColor = colorForPlaylist(slot.playlistId);
   }
-  if (active && active.dayIdx === dayIdx && active.slotIdx === slotIdx) {
+  if (active && active.dayIdx === dayIdx && active.slotIdx === w.idx) {
     el.classList.add('active-now');
     if (active.kind === 'early') el.classList.add('early-active');
     if (active.kind === 'late') el.classList.add('late-active');
   }
 
-  const timeRow = document.createElement('div');
-  timeRow.style.display = 'flex';
-  timeRow.style.alignItems = 'center';
-  timeRow.style.justifyContent = 'space-between';
+  // Proportional height: flex-grow proportional to duration, with a sensible min
+  const durMin = Math.max(1, w.durationMin);
+  el.style.flex = `${durMin} 1 0`;
+  el.style.minHeight = '64px';
+
+  // Header: time picker + duration
+  const head = document.createElement('div');
+  head.className = 'slot-header';
   const timeInput = document.createElement('input');
   timeInput.type = 'time';
   timeInput.className = 'slot-time-input';
   timeInput.value = slot.time;
   timeInput.addEventListener('change', e => {
-    state.week[dayIdx].slots[slotIdx].time = e.target.value;
+    state.week[dayIdx].slots[w.idx].time = e.target.value;
     saveWeek();
     renderWeek();
   });
-  timeRow.appendChild(timeInput);
-  el.appendChild(timeRow);
+  head.appendChild(timeInput);
+
+  const dur = document.createElement('span');
+  dur.className = 'slot-duration';
+  if (w.durationMin <= 0) {
+    dur.classList.add('warn');
+    dur.textContent = '⚠ overlap';
+  } else {
+    dur.textContent = formatDuration(w.durationMin);
+  }
+  head.appendChild(dur);
+  el.appendChild(head);
+
+  // Window line: 4:00pm – 7:00pm
+  const winLine = document.createElement('div');
+  winLine.className = 'slot-window';
+  winLine.textContent = `${formatMin(w.startMin)} – ${formatMin(w.endMin)}`;
+  el.appendChild(winLine);
 
   if (slot.playlistId) {
     const name = document.createElement('div');
@@ -1238,8 +1371,8 @@ function buildSlotEl(dayIdx, slotIdx, slot, active) {
     remove.title = 'Clear';
     remove.addEventListener('click', e => {
       e.stopPropagation();
-      state.week[dayIdx].slots[slotIdx].playlistId = '';
-      state.week[dayIdx].slots[slotIdx].playlistName = '';
+      state.week[dayIdx].slots[w.idx].playlistId = '';
+      state.week[dayIdx].slots[w.idx].playlistName = '';
       saveWeek();
       renderWeek();
       renderLibrary();
@@ -1264,8 +1397,8 @@ function buildSlotEl(dayIdx, slotIdx, slot, active) {
     const pid = e.dataTransfer.getData('application/playlist-id');
     const pname = e.dataTransfer.getData('application/playlist-name');
     if (!pid) return;
-    state.week[dayIdx].slots[slotIdx].playlistId = pid;
-    state.week[dayIdx].slots[slotIdx].playlistName = pname;
+    state.week[dayIdx].slots[w.idx].playlistId = pid;
+    state.week[dayIdx].slots[w.idx].playlistName = pname;
     saveWeek();
     renderWeek();
     renderLibrary();
@@ -1281,8 +1414,11 @@ function addSlot(dayIdx) {
   if (day.slots.length >= 3) return;
   const last = day.slots[day.slots.length - 1];
   const lastMin = last ? parseTime(last.time) : 16*60;
-  const newMin = Math.min(lastMin + 180, 23*60 + 30);
-  const newTime = String(Math.floor(newMin/60)).padStart(2,'0') + ':' + String(newMin%60).padStart(2,'0');
+  // Try to slot evenly between last slot and close
+  const close = day.closeTime;
+  const candidate = Math.floor((lastMin + close) / 2);
+  const newMin = Math.min(Math.max(candidate, lastMin + 30), Math.min(close - 30, 23*60+30));
+  const newTime = pad2(Math.floor(newMin/60)) + ':' + pad2(newMin%60);
   day.slots.push(s(newTime));
   saveWeek();
   renderWeek();
@@ -1296,9 +1432,6 @@ function removeSlot(dayIdx) {
   renderLibrary();
 }
 
-// ============================================================
-// REFRESH NUDGES
-// ============================================================
 function renderNudges() {
   const container = document.getElementById('nudgeContainer');
   container.innerHTML = '';
@@ -1307,7 +1440,6 @@ function renderNudges() {
   const HEAVY_USE = 5;
   const nudges = [];
 
-  // Time-based: scheduled playlists not modified in a while
   const usedIds = new Set();
   state.week.forEach(d => { if (!d.closed) d.slots.forEach(s => { if (s.playlistId) usedIds.add(s.playlistId); }); });
   usedIds.forEach(pid => {
@@ -1318,15 +1450,11 @@ function renderNudges() {
     if (ageDays >= STALE_DAYS && pl) {
       const key = 'stale-' + pid + '-' + Math.floor(ageDays/30);
       if (!state.dismissedNudges[key]) {
-        nudges.push({
-          key,
-          html: `<strong>${escapeHtml(pl.name)}</strong> hasn't been updated in <strong>${ageDays} days</strong>. Maybe time for a refresh?`
-        });
+        nudges.push({ key, html: `<strong>${escapeHtml(pl.name)}</strong> hasn't been updated in <strong>${ageDays} days</strong>. Maybe time for a refresh?` });
       }
     }
   });
 
-  // Usage-based: heavily-used playlists
   const counts = {};
   state.week.forEach(d => { if (!d.closed) d.slots.forEach(s => { if (s.playlistId) counts[s.playlistId] = (counts[s.playlistId]||0)+1; }); });
   Object.entries(counts).forEach(([pid, n]) => {
@@ -1335,10 +1463,7 @@ function renderNudges() {
       if (!pl) return;
       const key = 'heavy-' + pid + '-' + n;
       if (!state.dismissedNudges[key]) {
-        nudges.push({
-          key,
-          html: `<strong>${escapeHtml(pl.name)}</strong> is playing <strong>${n}×</strong> this week. Consider rotating in another playlist for variety.`
-        });
+        nudges.push({ key, html: `<strong>${escapeHtml(pl.name)}</strong> is playing <strong>${n}×</strong> this week. Consider rotating in another playlist for variety.` });
       }
     }
   });
@@ -1371,9 +1496,6 @@ function renderNudges() {
   });
 }
 
-// ============================================================
-// LOG / STATUS
-// ============================================================
 function addLog(msg, type = '') {
   const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
   state.log.unshift({ time, msg, type });
@@ -1419,7 +1541,6 @@ function setupToggle() {
     addLog('Auto-correct ' + (state.autoCorrect ? 'enabled' : 'paused'), 'action');
   });
 }
-
 function setupLeeway() {
   const li = document.getElementById('leadIn');
   const lo = document.getElementById('leadOut');
@@ -1480,8 +1601,50 @@ async function init() {
   await tick();
   setInterval(tick, 30000);
   setInterval(() => renderWeek(), 60000);
-  // Reload playlists every 10 min to catch updates
   setInterval(() => loadPlaylists().then(() => { renderLibrary(); renderNudges(); }), 10*60*1000);
+  setupBackgroundKeepAlive();
+}
+
+// ===== Keep the scheduler running when tab is in background =====
+// Browsers throttle setInterval in background tabs. This combo prevents that.
+
+let wakeLock = null;
+async function requestWakeLock() {
+  if ('wakeLock' in navigator) {
+    try {
+      wakeLock = await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release', () => { wakeLock = null; });
+    } catch (e) { /* user-action required on some browsers; will retry */ }
+  }
+}
+
+function setupBackgroundKeepAlive() {
+  // 1. Wake Lock — prevents screen/tab sleep
+  requestWakeLock();
+
+  // 2. Silent audio loop — keeps tab marked "audible" so it isn't throttled
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    gain.gain.value = 0.0001; // effectively silent
+    osc.frequency.value = 1;
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    // Some browsers require user interaction to start AudioContext
+    document.addEventListener('click', () => { if (ctx.state === 'suspended') ctx.resume(); }, { once: true });
+  } catch (e) { /* not critical */ }
+
+  // 3. Visibility change — re-run tick immediately when user returns to tab,
+  //    and re-acquire wake lock if it was released
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      if (!wakeLock) requestWakeLock();
+      tick(); // catch up any state we missed
+      addLog('Tab refocused — checking playback', 'check');
+    }
+  });
 }
 
 init();
